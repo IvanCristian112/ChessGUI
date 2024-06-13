@@ -1,5 +1,5 @@
 
-Cele trei variante de sah descrise in documentatie: 
+#Cele trei variante de sah descrise in documentatie: 
 
 1.Anti chess: obiectivul e sa pierzi toate piesele sau sa ajungi in pat
 
@@ -12,7 +12,7 @@ Cele trei variante de sah descrise in documentatie:
 
 
 
-Am creat o interfata grafica cu urmatoarele functionalitati: 
+#Lista de functionalitati: 
 1.Functionalitatea de baza a jocului de sah
 
 
