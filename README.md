@@ -11,3 +11,9 @@ Cele trei variante de sah
 
 Am creat o interfata grafica de baza care permite schimbarea modului de joc si permite salvarea mutarilor si apoi exportarea lor intr-un fisier text. 
 
+Cateva exemple 
+
+![Modul standard](Examples/standard.png)
+
+
+![King of The Hill](Examples/KingOfTheHill.png)
