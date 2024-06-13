@@ -8,10 +8,20 @@ Cele trei variante de sah
 
 Am creat o interfata grafica cu urmatoarele functionalitati: 
 1.Functionalitatea de baza a jocului de sah
+
+
 2.Alegerea variantei de sah - standard si cele 3 variante mentionate mai sus
+
+
 3.Lista de mutari facute de fiecare jucator in partea dreapta
+
+
 4.Intoarcerea la o pozitie anterioara - cand un jucator da click pe una dintre mutari din lista, jocul se intoarce la pozitia unde mutarea selectata este ultima mutare facuta de un jucator
+
+
 5.Exportarea mutarilor - lista de mutari este salvata intr-un fisier text in acelasi director cu aplicatia
+
+
 
 Cateva exemple 
 
