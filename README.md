@@ -1,13 +1,3 @@
-Pentru interfata grafica
-
-1.Tabla de joc
-2.Lista de mutari 
-3.buton de setari
-4.buton de export
-5.inca cateva optiuni langa lista de mutari
-
-In principiu, ar trebui sa arate cum arata GUI la chess.com
-
 
 Cele trei variante de sah 
 
@@ -17,3 +7,7 @@ Cele trei variante de sah
 (obiectivul este sa ajungem cu regele pe unul dintre cele patru patrate din mijloc)
 3.Three-check
 (obiectivul este sa dai sah regelui advers de trei ori)
+
+
+Am creat o interfata grafica de baza care permite schimbarea modului de joc si permite salvarea mutarilor si apoi exportarea lor intr-un fisier text. 
+
