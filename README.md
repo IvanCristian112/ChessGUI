@@ -13,7 +13,7 @@ Am creat o interfata grafica de baza care permite schimbarea modului de joc si p
 
 Cateva exemple 
 
-![Modul standard](Examples/standard.png)
+![Modul standard](Examples/standard.jpg)
 
 
 ![King of The Hill](Examples/KingOfTheHill.png)
