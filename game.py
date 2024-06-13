@@ -65,38 +65,80 @@ class ScrollableMoveList:
         self.rect = pygame.Rect(pos, size)
         self.font = pygame.font.Font(None, font_size)
         self.moves = []
+        self.fens = []  # Store FEN strings for each move
         self.scroll_offset = 0
         self.line_height = font_size + 5
+        self.font_size = font_size
 
-    def add_move(self, move):
+    def add_move(self, move, fen):
         move_number = (len(self.moves) // 2) + 1
         if len(self.moves) % 2 == 0:
             self.moves.append(f"{move_number}. {move}")
         else:
-            self.moves.append(f"{move}")
+            self.moves.append(f" {move}")
+        self.fens.append(fen)
 
         max_scroll = max(0, len(self.moves) * self.line_height - self.rect.height)
         self.scroll_offset = min(self.scroll_offset, max_scroll)
 
-    def handle_event(self, event):
+    def truncate_moves(self, index):
+        self.moves = self.moves[:index]
+        self.fens = self.fens[:index]
+
+    def handle_event(self, event, callback):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:  # Scroll up
                 self.scroll_offset = max(self.scroll_offset - self.line_height, 0)
             elif event.button == 5:  # Scroll down
                 max_scroll = max(0, len(self.moves) * self.line_height - self.rect.height)
                 self.scroll_offset = min(self.scroll_offset + self.line_height, max_scroll)
+            else:
+                for i, move_rect in enumerate(self.option_rects()):
+                    if move_rect.collidepoint(event.pos):
+                        callback(self.fens[i], i)
+                        break
+
+    def option_rects(self):
+        return [pygame.Rect(self.rect.x, self.rect.y + 5 + i * self.line_height - self.scroll_offset, self.rect.width, self.line_height) for i in range(len(self.moves))]
 
     def draw(self, screen):
         pygame.draw.rect(screen, (255, 255, 255), self.rect)
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 2)
 
         for i, move in enumerate(self.moves):
-            text_surface = self.font.render(move, True, (0, 0, 0))
-            y_position = self.rect.y + 5 + (i // 2) * self.line_height - self.scroll_offset
-            if i % 2 == 0:
-                screen.blit(text_surface, (self.rect.x + 5, y_position))
+            y_position = self.rect.y + 15 + i * self.line_height - self.scroll_offset
+            if y_position + self.line_height > self.rect.y and y_position < self.rect.y + self.rect.height:
+                text_surface = self.font.render(move, True, (0, 0, 0))
+                text_rect = text_surface.get_rect()
+                text_rect.topleft = (self.rect.x + 5, y_position)
+
+                if text_rect.width > self.rect.width - 10:
+                    wrapped_text = self.wrap_text(move, self.rect.width - 10)
+                    for line in wrapped_text:
+                        text_surface = self.font.render(line, True, (0, 0, 0))
+                        screen.blit(text_surface, (self.rect.x + 5, y_position))
+                        y_position += self.line_height
+                else:
+                    screen.blit(text_surface, (self.rect.x + 5, y_position))
+
+    def wrap_text(self, text, max_width):
+        words = text.split()
+        lines = []
+        current_line = ""
+        
+        for word in words:
+            test_line = f"{current_line} {word}".strip()
+            test_surface = self.font.render(test_line, True, (0, 0, 0))
+            if test_surface.get_width() <= max_width:
+                current_line = test_line
             else:
-                screen.blit(text_surface, (self.rect.x + 75, y_position))
+                lines.append(current_line)
+                current_line = word
+        
+        if current_line:
+            lines.append(current_line)
+        
+        return lines
 
 class ChessBoardGUI:
     def __init__(self, ruleset):
@@ -233,14 +275,14 @@ class ChessBoardGUI:
                         if move in self.board.legal_moves:
                             san_move = self.board.san(move)
                             self.board.push(move)
-                            self.move_list.add_move(san_move)
+                            self.move_list.add_move(san_move, self.board.fen())
                     self.selected_piece = None
                     dragging = False
                 elif event.type == pygame.MOUSEMOTION and dragging:
                     drag_pos = mouse_pos
 
                 self.dropdown.handle_event(event)
-                self.move_list.handle_event(event)
+                self.move_list.handle_event(event, self.set_board_to_fen)
                 self.export_button.handle_event(event, self.export_moves)
 
             self.screen.fill((169, 169, 169))  # Fill the screen with grey background
@@ -257,6 +299,10 @@ class ChessBoardGUI:
             self.check_ruleset()
 
         pygame.quit()
+
+    def set_board_to_fen(self, fen, index):
+        self.board.set_fen(fen)
+        self.move_list.truncate_moves(index + 1)
 
     def check_ruleset(self):
         selected_ruleset = self.dropdown.get_selected_option()
